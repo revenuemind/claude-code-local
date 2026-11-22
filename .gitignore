@@ -11,3 +11,6 @@ __pycache__/
 orchestrator.key
 .cache/
 site/
+
+# Local tool runtime state
+.claude-flow/
