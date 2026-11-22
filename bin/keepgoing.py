@@ -258,6 +258,22 @@ def free_cloud_models(key, limit=3):
     return [m["id"] for m in picks[:limit]]
 
 
+def omniroute_models(key, base=None, limit=8):
+    """Model ids on a local OmniRoute gateway (its providers are set up in its dashboard, so only
+    free ones should be added there). Empty if there is no key or the gateway isn't running."""
+    if not key:
+        return []
+    base = (base or os.environ.get("OMNIROUTE_URL") or "http://localhost:20128").rstrip("/")
+    try:
+        req = urllib.request.Request(f"{base}/v1/models", headers={"Authorization": f"Bearer {key}"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            data = json.load(r)["data"]
+    except Exception as e:
+        say(f"{C['dim']}  (couldn't reach OmniRoute at {base}: {e}){C['off']}")
+        return []
+    return [m["id"] for m in data if m.get("id")][:limit]
+
+
 def mac_ram_gb():
     try:
         # full path: /usr/sbin is often missing from PATH (hooks, launchd), and RAM then read as 0
@@ -338,6 +354,13 @@ def main(argv=None):
         say(f"{C['dim']}  (add a free OpenRouter key to see these — see README){C['off']}")
     elif not cloud:
         say(f"{C['dim']}  (none available right now){C['off']}")
+
+    omni_key = os.environ.get("OMNIROUTE_API_KEY", "")
+    if omni_key:
+        say(f"\n{C['dim']}  OMNIROUTE (free providers from your gateway){C['off']}")
+        for model in omniroute_models(omni_key):
+            options.append(("omniroute", model, 0))
+            say(f"{C['grn']}  {len(options):2}{C['off']}  {model}")
 
     say(f"\n{C['dim']}  ON {this_machine().upper()}{C['off']}")
     live = running_local_model()

@@ -671,12 +671,17 @@ def cmd_keepgoing(argv):
         print("Claude Code CLI not found. Install it, then run keep going again.")
         return 1
 
-    if kind == "cloud":
-        # OpenRouter speaks the Anthropic Messages API, so Claude Code talks to it directly.
+    if kind in ("cloud", "omniroute"):
+        # OpenRouter and OmniRoute both speak the Anthropic Messages API, so Claude Code talks to them directly.
+        if kind == "omniroute":
+            base = os.environ.get("OMNIROUTE_URL") or "http://localhost:20128"
+            token = os.environ.get("OMNIROUTE_API_KEY", "")
+        else:
+            base, token = "https://openrouter.ai/api", os.environ.get("OPENROUTER_API_KEY", "")
         cenv = dict(os.environ)
         cenv.pop("ANTHROPIC_API_KEY", None)
-        cenv.update({"ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
-                     "ANTHROPIC_AUTH_TOKEN": os.environ.get("OPENROUTER_API_KEY", ""),
+        cenv.update({"ANTHROPIC_BASE_URL": base,
+                     "ANTHROPIC_AUTH_TOKEN": token,
                      "ANTHROPIC_MODEL": model, "ANTHROPIC_DEFAULT_HAIKU_MODEL": model,
                      "ANTHROPIC_DEFAULT_SONNET_MODEL": model, "ANTHROPIC_DEFAULT_OPUS_MODEL": model,
                      "API_TIMEOUT_MS": "600000", "DISABLE_TELEMETRY": "1"})

@@ -6,6 +6,8 @@
 #
 # Settings (all optional), read from the environment or ~/.config/claude-code-local/keepgoing.env:
 #   OPENROUTER_API_KEY   free key from https://openrouter.ai/keys — unlocks the free cloud models
+#   OMNIROUTE_API_KEY    key from your OmniRoute dashboard (Endpoints/API keys) — lists its models
+#   OMNIROUTE_URL        where OmniRoute runs (default http://localhost:20128)
 #   KEEPGOING_BEFORE_LOCAL / KEEPGOING_AFTER_LOCAL
 #                        commands to run before starting a local model and after you're done
 #                        (for example, pause another app that needs the same memory)
@@ -30,10 +32,13 @@ MLX_LOG="${MLX_LOG:-/tmp/mlx-server-$(id -un).log}"  # one per user
 SEL="$(python3 "$HERE/keepgoing.py" "$@")" || exit 0
 IFS=$'\t' read -r SID KIND MODEL ALREADY <<< "$SEL"
 
-if [ "$KIND" = "cloud" ]; then
-  # OpenRouter speaks the Anthropic Messages API, so Claude Code talks to it directly.
-  export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
-  export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+if [ "$KIND" = "cloud" ] || [ "$KIND" = "omniroute" ]; then
+  # OpenRouter and OmniRoute both speak the Anthropic Messages API, so Claude Code talks to them directly.
+  if [ "$KIND" = "omniroute" ]; then
+    export ANTHROPIC_BASE_URL="${OMNIROUTE_URL:-http://localhost:20128}" ANTHROPIC_AUTH_TOKEN="$OMNIROUTE_API_KEY"
+  else
+    export ANTHROPIC_BASE_URL="https://openrouter.ai/api" ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+  fi
   export ANTHROPIC_MODEL="$MODEL"
   export ANTHROPIC_DEFAULT_HAIKU_MODEL="$MODEL" ANTHROPIC_DEFAULT_SONNET_MODEL="$MODEL" \
          ANTHROPIC_DEFAULT_OPUS_MODEL="$MODEL"
