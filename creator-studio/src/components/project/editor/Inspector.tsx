@@ -4,6 +4,7 @@ import type { Animation, BackgroundKind, CaptionClip, Clip, EnterExitType, TextS
 import { FONT_FAMILIES } from '@/lib/render/fonts';
 import { estimateWordTimings } from '@/lib/templates/engine';
 import { useI18n } from '../../I18nProvider';
+import { displayName } from '@/lib/i18n/names';
 import { Field } from '../../ui';
 
 const ANIMS: EnterExitType[] = ['none', 'fade', 'slide-up', 'slide-down', 'slide-left', 'slide-right', 'pop', 'zoom-in', 'zoom-out', 'wipe', 'blur', 'typewriter', 'words', 'rise-words'];
@@ -31,7 +32,7 @@ function AnimSelect({ label, value, onChange }: { label: string; value?: Animati
 }
 
 export function Inspector({ clip, onChange, onPickMedia }: { clip: Clip | null; onChange: (patch: Partial<Clip>, key: string) => void; onPickMedia: () => void }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (!clip) return <p className="p-4 text-sm text-mute">{t('editor.noSelection')}</p>;
   const set = (patch: Partial<Clip>, key = Object.keys(patch)[0]) => onChange(patch, `${clip.id}:${key}`);
   const style = 'style' in clip && clip.style && 'fontFamily' in clip.style ? (clip.style as TextStyle) : null;
@@ -42,7 +43,7 @@ export function Inspector({ clip, onChange, onPickMedia }: { clip: Clip | null; 
     <div className="space-y-4 p-4 text-sm" data-testid="inspector">
       <div className="flex items-center justify-between">
         <span className="badge badge-accent">{clip.type}</span>
-        <span className="truncate text-xs text-mute">{clip.name}</span>
+        <span className="truncate text-xs text-mute">{displayName(clip.name, locale)}</span>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <Num label={`${t('editor.start')} (s)`} value={sec(clip.start)} onChange={(v) => set({ start: Math.max(0, v * 1000) })} min={0} />

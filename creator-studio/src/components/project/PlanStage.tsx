@@ -4,6 +4,7 @@ import type { PlanScene, ProductionPlan, SceneMediaMode } from '@/lib/planning/t
 import type { ClientProject } from '@/lib/client/types';
 import { apiFetch } from '@/lib/client/api';
 import { useEngines, usableProviders } from '@/lib/client/useEngines';
+import { roleName, captionStyleName } from '@/lib/i18n/names';
 import { useI18n } from '../I18nProvider';
 import { Field, Spinner, StatusBadge, cx, useAction, Progress } from '../ui';
 import { useProject } from './ProjectWorkspace';
@@ -13,7 +14,7 @@ const MODES_FOR: Record<PlanScene['mediaKind'], SceneMediaMode[]> = {
 };
 
 export function PlanStage() {
-  const { t, dur } = useI18n();
+  const { t, dur, locale } = useI18n();
   const { project, setProject, jobs, refreshJobs, perms, go } = useProject();
   const { busy, run } = useAction();
   const [plan, setPlan] = useState<ProductionPlan | null>(project.plan);
@@ -79,7 +80,7 @@ export function PlanStage() {
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={plan.voice.enabled} onChange={(e) => upd({ ...plan, voice: { ...plan.voice, enabled: e.target.checked } })} /> {t('plan.voice')}</label>
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={plan.subtitles.enabled} onChange={(e) => upd({ ...plan, subtitles: { ...plan.subtitles, enabled: e.target.checked } })} /> {t('plan.subtitles')}</label>
               <select className="field !w-auto !py-1 text-xs" value={plan.subtitles.preset} onChange={(e) => upd({ ...plan, subtitles: { ...plan.subtitles, preset: e.target.value as ProductionPlan['subtitles']['preset'] } })} aria-label={t('editor.captionStyle')}>
-                {['bold-pop', 'karaoke', 'minimal', 'boxed', 'neon'].map((p) => <option key={p} value={p}>{p}</option>)}
+                {['bold-pop', 'karaoke', 'minimal', 'boxed', 'neon'].map((p) => <option key={p} value={p}>{captionStyleName(p, locale)}</option>)}
               </select>
             </div>
           </div>
@@ -90,7 +91,7 @@ export function PlanStage() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="grid h-7 w-7 place-items-center rounded-lg bg-panel-3 font-mono text-xs">{i + 1}</span>
                 <span className="font-semibold">{t(`layouts.${s.layout}`)}</span>
-                <span className="badge">{s.role}</span>
+                <span className="badge">{roleName(s.role, locale)}</span>
                 <div className="ms-auto flex items-center gap-2">
                   <label className="flex items-center gap-1 text-xs text-mute">{t('plan.duration')}
                     <input type="number" min={0.5} max={600} step={0.1} className="field !w-20 !py-1" value={s.durationSec} onChange={(e) => updScene(s.id, { durationSec: Number(e.target.value) })} />s

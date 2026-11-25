@@ -21,7 +21,7 @@ _Last updated: 2026-11-25_
 | 8 | Timeline editor + FFmpeg rendering + presets + subtitles | ✅ Done |
 | 9 | Publishing (YouTube, TikTok, Instagram, Facebook, Blotato, manual), scheduling, captions | ✅ Implemented — ⚠ live verification pending |
 | 10 | 5-language UI with RTL, admin console, plans/limits/usage | ✅ Done (billing provider not connected) |
-| 11 | Tests, E2E, docs | ✅ Done — 69 unit/integration + 6 E2E passing |
+| 11 | Tests, E2E, docs | ✅ Done — 74 unit/integration + 6 E2E passing |
 
 ## Completed
 
@@ -34,6 +34,13 @@ _Last updated: 2026-11-25_
 - **Jobs**: PostgreSQL queue with exactly-once claiming, retries/backoff, cancellation, crash recovery, progress, and an in-process or standalone worker with heartbeat.
 - **SaaS**: sessions, scrypt passwords, RBAC (owner/admin/editor/viewer), org isolation, encrypted credentials, CSRF/origin checks, rate limits, upload sniffing, signed expiring media links, audit log, plans as data, usage metering and limits, admin console (users, orgs/plans, jobs, plan limits, audit, health).
 - **i18n**: en/he/ru/ar/am, typed dictionaries with compile-time completeness, RTL layouts, localized dates/numbers/currency, content language independent of UI language (12 content languages).
+
+## Recent fixes (2026-11-25)
+
+- Wizard: the Example button fills content in the video language (Hebrew examples for all 50 templates; other languages fall back to English with a notice).
+- Wizard: Code-only is preselected when no AI image/video engine is connected, with an explanation.
+- Offline plans: concept, visual/music direction and rationale are written in the content language (he/en/ru/ar/am); the AI planner is told to do the same.
+- Editor and plan: built-in track/clip names, scene roles and caption styles are shown in the interface language; long-clip labels stay visible in RTL.
 
 ## Pending / next
 

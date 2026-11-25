@@ -51,7 +51,7 @@ const he: Dict = {
     references: 'חומרי רקע / הערות', sourceUrls: 'כתובות מקור (אחת בכל שורה)', platforms: 'פלטפורמות יעד', style: 'סגנון הסרטון', styleDefault: 'ברירת המחדל של התבנית',
     audience: 'קהל יעד', contentLanguage: 'שפת הסרטון', contentLanguageHint: 'בלתי תלויה בשפת הממשק.', duration: 'אורך (שניות)',
     aspect: 'יחס תמונה', brand: 'מותג', noBrand: 'ללא מותג', objective: 'מטרת התוכן', mode: 'שיטת הפקה', voiceover: 'קריינות', captions: 'כתוביות',
-    createAndPlan: 'יצירת פרויקט וטיוטת תוכנית', template: 'תבנית', changeTemplate: 'החלפת תבנית',
+    createAndPlan: 'יצירת פרויקט וטיוטת תוכנית', template: 'תבנית', changeTemplate: 'החלפת תבנית', example: 'דוגמה', exampleEnglishOnly: 'הדוגמה באנגלית — עדיין אין לתבנית הזו דוגמה ב{lang}.', noAiEngines: 'לא מחובר אף מנוע AI, ולכן נבחר מצב קוד בלבד. כדי להשתמש במצב AI או היברידי, חברו מנוע בעמוד מנועי AI.',
     modes: { code: 'קוד בלבד', ai: 'מנועי AI', hybrid: 'היברידי' },
     modeHelp: { code: 'גרפיקה בתנועה שמרונדרת בסטודיו. ללא AI חיצוני וללא עלות.', ai: 'כל משבצת מדיה מופקת על ידי מנועי ה-AI שלכם.', hybrid: 'AI במקומות החשובים, קוד בכל השאר.' },
   },

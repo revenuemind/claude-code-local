@@ -52,7 +52,7 @@ const am: Dict = {
     references: 'የማጣቀሻ ቁሳቁስ / ማስታወሻዎች', sourceUrls: 'የምንጭ አድራሻዎች (በመስመር አንድ)', platforms: 'ዒላማ መድረኮች', style: 'የቪዲዮ ዘይቤ', styleDefault: 'የአብነቱ ነባሪ',
     audience: 'ዒላማ ታዳሚ', contentLanguage: 'የቪዲዮ ቋንቋ', contentLanguageHint: 'ከበይነገጹ ቋንቋ ነፃ ነው።', duration: 'ርዝመት (በሰከንድ)',
     aspect: 'የምጥጥን መጠን', brand: 'ብራንድ', noBrand: 'ብራንድ የለም', objective: 'የይዘቱ ዓላማ', mode: 'የምርት ዘዴ', voiceover: 'የድምፅ ትረካ', captions: 'የጽሑፍ ትርጉም',
-    createAndPlan: 'ፕሮጀክት ፍጠር እና ዕቅድ አርቅቅ', template: 'አብነት', changeTemplate: 'አብነት ቀይር',
+    createAndPlan: 'ፕሮጀክት ፍጠር እና ዕቅድ አርቅቅ', template: 'አብነት', changeTemplate: 'አብነት ቀይር', example: 'ምሳሌ', exampleEnglishOnly: 'ምሳሌው በእንግሊዝኛ ነው — ለዚህ አብነት በ{lang} ምሳሌ ገና የለም።', noAiEngines: 'ምንም የAI ሞተር አልተገናኘም፣ ስለዚህ ኮድ ብቻ ተመርጧል። AI ወይም ድብልቅን ለመጠቀም በAI ሞተሮች ገጽ ሞተር ያገናኙ።',
     modes: { code: 'ኮድ ብቻ', ai: 'የAI ሞተሮች', hybrid: 'ድብልቅ' },
     modeHelp: { code: 'በስቱዲዮው የሚቀርብ ሞሽን ግራፊክስ። ውጫዊ AI የለም፣ ወጪ የለም።', ai: 'እያንዳንዱ የሚዲያ ቦታ በAI ሞተሮችዎ ይመነጫል።', hybrid: 'AI በጣም አስፈላጊ በሆነበት፣ ኮድ በሌላው ሁሉ።' },
   },

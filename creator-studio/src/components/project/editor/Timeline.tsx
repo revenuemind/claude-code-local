@@ -5,6 +5,8 @@ import type { Clip, Composition, Track } from '@/lib/composition/types';
 import { moveClip, trimClip, updateTrack } from '@/lib/composition/ops';
 import { cx } from '../../ui';
 import { useI18n } from '../../I18nProvider';
+import { displayName } from '@/lib/i18n/names';
+import type { Locale as UiLocale } from '@/lib/i18n/config';
 
 const HEADER_W = 168;
 const LANE_H = 34;
@@ -16,11 +18,11 @@ const COLORS: Record<string, string> = {
   audio: 'from-[#203a28] to-[#16291c] border-[#3c8a55]',
 };
 
-function clipLabel(c: Clip): string {
+function clipLabel(c: Clip, locale: UiLocale): string {
   if (c.type === 'text') return c.text.replace(/\*/g, '');
   if (c.type === 'caption') return c.words.map((w) => w.text).join(' ');
-  if (c.type === 'audio') return c.name ?? c.role;
-  return c.name ?? c.type;
+  if (c.type === 'audio') return displayName(c.name, locale) ?? c.role;
+  return displayName(c.name, locale) ?? c.type;
 }
 
 interface Props {
@@ -29,7 +31,7 @@ interface Props {
 }
 
 export const Timeline = memo(function Timeline({ comp, time, pxPerSec, selectedId, snap, onSelect, onSeek, onChange }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const scroller = useRef<HTMLDivElement>(null);
   const width = Math.max(800, (comp.durationMs / 1000 + 5) * pxPerSec);
   const ms2px = (ms: number) => (ms / 1000) * pxPerSec;
@@ -102,7 +104,7 @@ export const Timeline = memo(function Timeline({ comp, time, pxPerSec, selectedI
         <div className="h-7 border-b border-line" />
         {comp.tracks.map((tr) => (
           <div key={tr.id} className="flex items-center gap-1 border-b border-line/60 px-2" style={{ height: LANE_H }}>
-            <span className="min-w-0 flex-1 truncate font-medium text-ink-2">{tr.name}</span>
+            <span className="min-w-0 flex-1 truncate font-medium text-ink-2">{displayName(tr.name, locale)}</span>
             {tr.kind === 'visual'
               ? <button className={cx('btn btn-sm btn-icon !px-1.5', tr.hidden && 'text-bad')} onClick={() => toggle(tr, 'hidden')} title={tr.hidden ? t('editor.show') : t('editor.hide')}>{tr.hidden ? '◌' : '◉'}</button>
               : <button className={cx('btn btn-sm btn-icon !px-1.5', tr.muted && 'text-bad')} onClick={() => toggle(tr, 'muted')} title={tr.muted ? t('editor.unmute') : t('editor.mute')}>{tr.muted ? '🔇' : '🔊'}</button>}
@@ -124,9 +126,9 @@ export const Timeline = memo(function Timeline({ comp, time, pxPerSec, selectedI
                   className={cx('absolute top-1 bottom-1 overflow-hidden rounded-md border bg-gradient-to-b', COLORS[c.type] ?? COLORS.background, selectedId === c.id ? 'ring-2 ring-accent' : '', tr.locked ? 'cursor-not-allowed' : 'cursor-grab')}
                   style={{ left: ms2px(c.start), width: Math.max(4, ms2px(c.duration)) }}
                   onPointerDown={(e) => begin(e, c, ti, 'move')} onPointerMove={(e) => move(e)} onPointerUp={(e) => move(e, true)}
-                  data-testid={`clip-${c.type}`} title={clipLabel(c)}>
+                  data-testid={`clip-${c.type}`} title={clipLabel(c, locale)}>
                   <div className="absolute inset-y-0 left-0 w-1.5 cursor-ew-resize bg-white/0 hover:bg-white/30" onPointerDown={(e) => begin(e, c, ti, 'start')} onPointerMove={(e) => move(e)} onPointerUp={(e) => move(e, true)} />
-                  <div className="pointer-events-none truncate px-2 pt-1 text-[11px] font-medium text-ink" dir="auto">{clipLabel(c)}</div>
+                  <div className="pointer-events-none truncate px-2 pt-1 text-[11px] font-medium text-ink" dir="auto" style={{ textAlign: 'left' }}>{clipLabel(c, locale)}</div>
                   {c.transition && c.transition.type !== 'cut' && <div className="pointer-events-none absolute inset-y-0 left-0 bg-white/10" style={{ width: ms2px(c.transition.durationMs) }} />}
                   <div className="absolute inset-y-0 right-0 w-1.5 cursor-ew-resize bg-white/0 hover:bg-white/30" onPointerDown={(e) => begin(e, c, ti, 'end')} onPointerMove={(e) => move(e)} onPointerUp={(e) => move(e, true)} />
                 </div>

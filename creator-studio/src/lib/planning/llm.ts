@@ -38,7 +38,7 @@ export function buildPlannerPrompt(skeleton: ProductionPlan, c: PlannerContext):
   const system = [
     'You are a senior video producer and scriptwriter for short-form and long-form social video.',
     'You write tight, specific, high-retention scripts: a strong hook in the first 2 seconds, one idea per scene, concrete details, no filler, no clichés, no hashtags inside the script.',
-    `Write every viewer-facing field (headline, body, kicker, label, narration, bullets, left/right text) in ${lang}. Write shotDescription and visualPrompt in English (they are sent to image/video models).`,
+    `Write every viewer-facing field (headline, body, kicker, label, narration, bullets, left/right text) in ${lang}. Also write title, concept, hook, visualDirection, musicDirection and rationale in ${lang} (the creator reads them). Write shotDescription and visualPrompt in English (they are sent to image/video models).`,
     'On-screen text must be short: headlines ≤ 8 words, body ≤ 18 words. Wrap at most one key word per headline in *asterisks* for emphasis.',
     `Narration for a scene must be speakable within its duration at about ${wordsPerSecond(skeleton.language)} words per second.`,
     'visualPrompt: a single vivid, concrete description for an AI image/video model (subject, setting, lighting, camera, mood). Never include text, logos, real people’s names or copyrighted characters.',

@@ -13,6 +13,8 @@ import { Field, PageHeader, cx, useAction, Spinner } from '../ui';
 import { Player, usePlayback, TransportBar } from '../Player';
 import { localized } from '../templates/TemplateLibrary';
 import { apiFetch } from '@/lib/client/api';
+import { useEngines, usableProviders } from '@/lib/client/useEngines';
+import { sampleFor } from '@/lib/templates/samples';
 
 const PLATFORMS: Platform[] = ['youtube', 'shorts', 'tiktok', 'instagram', 'facebook'];
 const PLATFORM_LABEL: Record<Platform, string> = { youtube: 'YouTube', shorts: 'Shorts', tiktok: 'TikTok', instagram: 'Instagram', facebook: 'Facebook' };
@@ -50,14 +52,23 @@ export function NewProjectWizard({ templates, brands, initialTemplateId }: { tem
   const [captions, setCaptions] = useState(true);
   const [inputs, setInputs] = useState<Record<string, string>>({});
 
+  const engines = useEngines();
+  // AI or Hybrid only make sense when an image or video engine with a key is connected.
+  const hasAiMedia = engines.data ? ['image', 'video'].some((c) => usableProviders(engines.data, c).some((p) => p.status !== 'builtin')) : null;
+  const modeFor = (x: TemplateDefinition): ProductionMode => {
+    if (hasAiMedia === false && x.modes.includes('code')) return 'code';
+    return x.modes.includes(x.recommendedMode) ? x.recommendedMode : x.modes[0];
+  };
+  const [modeTouched, setModeTouched] = useState(false);
+  useEffect(() => { if (tpl && !modeTouched && hasAiMedia !== null) setMode(modeFor(tpl)); }, [hasAiMedia, tpl]); // eslint-disable-line react-hooks/exhaustive-deps
   const choose = (x: TemplateDefinition) => {
-    setTpl(x); setAspect(x.defaultAspect); setDuration(x.duration.default); setMode(x.modes.includes(x.recommendedMode) ? x.recommendedMode : x.modes[0]);
+    setTpl(x); setAspect(x.defaultAspect); setDuration(x.duration.default); setMode(modeFor(x)); setModeTouched(false);
     setVoiceover(x.requirements.voiceover === 'required' || x.requirements.voiceover === 'recommended'); setType(typeFor(x)); setPlatforms(x.platforms.slice(0, 2)); setInputs({});
     setStep(1);
   };
   const fillExample = () => {
     if (!tpl) return;
-    setInputs(Object.fromEntries(Object.entries(tpl.sample).map(([k, v]) => [k, Array.isArray(v) ? v.join('\n') : String(v)])));
+    setInputs(Object.fromEntries(Object.entries(sampleFor(tpl, language).sample).map(([k, v]) => [k, Array.isArray(v) ? v.join('\n') : String(v)])));
     if (!name) setName(localized(tpl.name, locale));
   };
   const toInputs = () => Object.fromEntries(tpl!.fields.map((f) => [f.key, f.type === 'list' ? (inputs[f.key] ?? '').split('\n').map((s) => s.trim()).filter(Boolean) : (inputs[f.key] ?? '')]));
@@ -66,7 +77,7 @@ export function NewProjectWizard({ templates, brands, initialTemplateId }: { tem
   const preview = useMemo(() => {
     if (!tpl || step < 2) return null;
     try {
-      const filled = Object.values(inputs).some((v) => v.trim()) ? toInputs() : tpl.sample;
+      const filled = Object.values(inputs).some((v) => v.trim()) ? toInputs() : sampleFor(tpl, language).sample;
       const plan = draftPlan(tpl, filled, { language, durationSec: duration, mode, voiceover: false, captions: false });
       return buildComposition(plan, tpl, { aspect, brand, styleId: style || null });
     } catch { return null; }
@@ -170,12 +181,13 @@ export function NewProjectWizard({ templates, brands, initialTemplateId }: { tem
                 <span className="label">{t('wizard.mode')}</span>
                 <div className="grid gap-3 md:grid-cols-3">
                   {(['code', 'ai', 'hybrid'] as ProductionMode[]).map((m) => (
-                    <button key={m} type="button" disabled={!tpl.modes.includes(m)} onClick={() => setMode(m)} className={cx('card p-4 text-start transition', m === mode ? 'border-accent ring-2 ring-accent/30' : 'hover:border-line-2', !tpl.modes.includes(m) && 'opacity-40')}>
+                    <button key={m} type="button" disabled={!tpl.modes.includes(m)} onClick={() => { setMode(m); setModeTouched(true); }} className={cx('card p-4 text-start transition', m === mode ? 'border-accent ring-2 ring-accent/30' : 'hover:border-line-2', !tpl.modes.includes(m) && 'opacity-40')}>
                       <div className="font-display font-semibold">{t(`wizard.modes.${m}`)} {m === tpl.recommendedMode && <span className="badge badge-accent ms-1">{t('templates.recommended')}</span>}</div>
                       <div className="mt-1 text-xs text-mute">{t(`wizard.modeHelp.${m}`)}</div>
                     </button>
                   ))}
                 </div>
+                {hasAiMedia === false && mode === 'code' && <p className="mt-2 text-xs text-mute" data-testid="no-ai-engines">{t('wizard.noAiEngines')}</p>}
               </div>
               <div className="flex flex-wrap gap-6">
                 <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={voiceover} onChange={(e) => setVoiceover(e.target.checked)} /> {t('wizard.voiceover')}</label>
@@ -186,8 +198,9 @@ export function NewProjectWizard({ templates, brands, initialTemplateId }: { tem
             {step === 3 && (<>
               <div className="flex items-center justify-between">
                 <p className="text-sm text-mute">{t('templates.fields')}</p>
-                <button className="btn btn-ghost btn-sm" onClick={fillExample} data-testid="fill-example">✦ Example</button>
+                <button className="btn btn-ghost btn-sm" onClick={fillExample} data-testid="fill-example">✦ {t('wizard.example')}</button>
               </div>
+              {!sampleFor(tpl, language).localized && <p className="text-xs text-warn" data-testid="example-english-only">{t('wizard.exampleEnglishOnly', { lang: CONTENT_LANGUAGE_NAMES[language as keyof typeof CONTENT_LANGUAGE_NAMES] ?? language })}</p>}
               {tpl.fields.map((f) => (
                 <Field key={f.key} label={<>{localized(f.label, locale)} {f.required && <span className="text-bad">*</span>}</>}>
                   {f.type === 'list' || f.type === 'textarea'

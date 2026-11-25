@@ -11,7 +11,7 @@
 7. **In-memory rate limiting** is per process (use the load balancer or Redis in multi-node setups).
 8. **Billing is prepared, not connected.** Plans and limits are data and usage is metered, but no payment provider (e.g. Stripe) is integrated; admins assign plans.
 9. **Fonts.** The bundled set covers Latin, Cyrillic, Hebrew, Arabic and Ethiopic. CJK and Devanagari content renders with system fallbacks only, so those content languages are not offered.
-10. **Translations.** UI strings in Hebrew, Russian, Arabic and Amharic were machine-assisted and should be reviewed by native speakers (especially Amharic) before launch.
+10. **Translations.** Example content exists in English and Hebrew; other video languages fall back to the English example (the wizard says so). UI strings in Hebrew, Russian, Arabic and Amharic were machine-assisted and should be reviewed by native speakers (especially Amharic) before launch.
 11. **Workspaces** exist in the data model (projects/brands can belong to one), but the UI does not yet expose workspace management.
 12. **Embedded database** (PGlite) is single-process; use PostgreSQL to run separate worker processes.
 

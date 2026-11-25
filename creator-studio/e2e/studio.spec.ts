@@ -55,8 +55,12 @@ test.describe.serial('AI Creator Studio', () => {
     await page.fill('[data-testid=project-name]', 'E2E phone tricks');
     await page.getByRole('button', { name: 'Next' }).click();
     await page.selectOption('[data-testid=content-language]', 'he');
+    // No AI engine is connected, so Code-only is preselected and explained.
+    await expect(page.getByTestId('no-ai-engines')).toBeVisible();
     await page.getByRole('button', { name: 'Next' }).click();
     await page.click('[data-testid=fill-example]');
+    await expect(page.getByTestId('example-english-only')).toHaveCount(0);
+    await expect(page.locator('textarea.field').first()).toHaveValue(/[\u0590-\u05FF]/);
     await page.click('[data-testid=create-project]');
     await page.waitForURL(/stage=plan/);
     projectUrl = page.url().split('?')[0];
