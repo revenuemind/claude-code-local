@@ -32,7 +32,7 @@ export function Dashboard({ name, projects, stats, jobs, featured }: { name: str
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-display text-lg font-semibold">{t('dashboard.quickStart')}</h2>
-          <Link className="text-sm font-semibold text-accent-2 hover:underline" href="/templates">{t('dashboard.browseAll')} →</Link>
+          <Link className="text-sm font-semibold text-accent-2 hover:underline" href="/templates">{t('dashboard.browseAll')} <span className="inline-block rtl:rotate-180">→</span></Link>
         </div>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           {featured.map((f) => (

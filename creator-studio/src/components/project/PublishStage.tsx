@@ -115,7 +115,7 @@ export function PublishStage() {
           <button className="btn btn-ghost" disabled={!perms.publish || !!busy || !form.scheduledAt} onClick={() => submit('schedule')}>{t('publish.schedule')}</button>
           <button className="btn btn-primary" disabled={!perms.publish || !!busy || (form.platform !== 'manual' && platformAccounts.length === 0)} onClick={() => submit('now')} data-testid="publish-now">{t('publish.publishNow')}</button>
         </div>
-        {form.platform !== 'manual' && platformAccounts.length === 0 && <Link className="text-xs text-accent-2 hover:underline" href="/publishing">{t('publish.connect')} →</Link>}
+        {form.platform !== 'manual' && platformAccounts.length === 0 && <Link className="text-xs text-accent-2 hover:underline" href="/publishing">{t('publish.connect')} <span className="inline-block rtl:rotate-180">→</span></Link>}
       </div>
       <div className="card">
         <h3 className="border-b border-line px-5 py-3 font-display font-semibold">{t('publish.queue')}</h3>

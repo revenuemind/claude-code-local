@@ -45,7 +45,7 @@ export function Overview() {
           </div>
         )}
         <div className="card space-y-2 p-5">
-          {next.map((n) => <button key={n.label} className="btn btn-soft w-full justify-between" onClick={() => go(n.stage)}>{n.label}<span aria-hidden>→</span></button>)}
+          {next.map((n) => <button key={n.label} className="btn btn-soft w-full justify-between" onClick={() => go(n.stage)}>{n.label}<span aria-hidden className="inline-block rtl:rotate-180">→</span></button>)}
         </div>
         <div className="flex gap-2">
           {perms.write && <button className="btn btn-ghost" disabled={!!busy} onClick={duplicate}>{t('common.duplicate')}</button>}
