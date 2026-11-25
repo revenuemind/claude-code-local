@@ -16,7 +16,7 @@ import { captionChunks } from './renderer';
 
 let fontsRegistered = false;
 export function fontsDir(): string {
-  return process.env.FONTS_DIR || path.resolve(process.cwd(), 'assets/fonts');
+  return process.env.FONTS_DIR || path.resolve(process.cwd(), 'public/fonts');
 }
 export function registerFonts(): void {
   if (fontsRegistered) return;

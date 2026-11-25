@@ -11,6 +11,7 @@ const config: NextConfig = {
   // Native / WASM server packages must not be bundled.
   serverExternalPackages: ['@napi-rs/canvas', '@electric-sql/pglite', 'pg'],
   poweredByHeader: false,
+  devIndicators: false,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },

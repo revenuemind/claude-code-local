@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const OUT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../assets/fonts');
+const OUT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../public/fonts');
 // family -> weights. Script coverage noted for maintainers.
 export const FONT_SET = {
   'Inter': [400, 700, 800],            // Latin, Cyrillic

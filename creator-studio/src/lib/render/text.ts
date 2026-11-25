@@ -71,6 +71,9 @@ interface Measurer { measureText(t: string): { width: number }; font: string; le
 
 const layoutCache = new Map<string, TextLayout>();
 
+/** Must be called when web fonts finish loading: cached measurements may come from fallback fonts. */
+export function clearTextLayoutCache() { layoutCache.clear(); }
+
 export function layoutText(
   ctx: Measurer,
   text: string,

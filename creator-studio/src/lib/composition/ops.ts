@@ -202,6 +202,12 @@ export class History<T> {
     this.future = [];
     return next;
   }
+  /** Replace the present without creating an undo step (used to coalesce rapid edits). */
+  replace(next: T): T {
+    this.present = next;
+    this.future = [];
+    return next;
+  }
   undo(): T {
     const prev = this.past.pop();
     if (prev === undefined) return this.present;
