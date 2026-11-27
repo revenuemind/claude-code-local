@@ -11,3 +11,4 @@ __pycache__/
 orchestrator.key
 .cache/
 site/
+.claude-flow/
